@@ -1,0 +1,186 @@
+{
+    "openapi" : "3.1.0",
+    "info": {
+        "description" : "API de Carambar pour gérer/afficher les blagues",
+        "version" : "1.0.0",
+        "title" : "API de Carambar"
+    },
+    "servers": [
+        {
+            "url" : "http://localhost:3000"
+        }
+    ],
+    "tags" : [
+        {
+            "name" : "Blague",
+            "description" : "Information concernant les blagues"
+        }
+    ],
+    "paths" : {
+        "/blagues" : {
+            "get" : {
+                "tags" : [
+                    "Blague"
+                ],
+                "summary" : "Obtenir toutes les blagues",
+                "description" : "Renvoie toutes les blagues",
+                "responses" : {
+                    "200" : {
+                        "description" : "Renvoie toutes les blagues disponibles en base de données",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "$ref" : "#/components/schemas/arraysOfBlagues"
+                                }
+                            }
+                        }
+                    },
+                    "404" : {
+                        "description" : "Renvoie une erreur, pas d'information trouvée"
+                    }
+                }
+            }
+        },
+        "/blagues/random" : {
+            "get" : {
+                "tags" : [
+                    "Blague"
+                ],
+                "summary": "Obtenir une blague aléatoire",
+                "description": "Récupère une blague aléatoirement",
+                "responses" : {
+                    "200" : {
+                        "description" : "Renvoie une blague aléatoirement a chaque requête",
+                        "content": {
+                            "application/json" : {
+                                "schema" : {
+                                    "$ref" : "#/components/schemas/blagues"
+                                }
+                            }
+                        }
+                    },
+                    "404" : {
+                        "description": "Renvoie une erreur, pas d'information trouvée"
+                    }
+                }
+            }
+        },
+        "/blagues/:id" : {
+            "get" : {
+                "tags" : [
+                    "Blague"
+                ],
+                "summary" : "Obtenir une blague avec son id",
+                "description" : "Récupère une blague en fonction de son id",
+                "parameters" : [
+                    {
+                        "name" : "id",
+                        "in" : "path",
+                        "description" : "Identifiant de la blague",
+                        "required" : true,
+                        "schema" : {
+                            "type" : "integer"
+                        }
+                    }
+                ],
+                "responses" : {
+                    "200" : {
+                        "description" : "Renvoie une blague en fonction de son id (l'id dans la requête sera l'id rattaché a la blague)",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "example" : {
+                                        "id" : 9,
+                                        "joke": "Quel est le sport le plus silencieux ? Le para-chuuuut"
+                                    }
+                                }
+                            } 
+                        }
+                    },
+                    "404" : {
+                        "description" :"Renvoie une erreur, pas d'information trouvée"
+                    }
+                }
+            }
+        },
+        "/blagues/add" : {
+            "post" : {
+                "tags" : [
+                    "Blague"
+                ],
+                "summary" : "Créer une nouvelle blague",
+                "description" : "Créer une blague en donnant l'intitulé de cette dernière",
+                "requestBody" : {
+                    "description" : "Contenu de la blague",
+                    "required" : true,
+                    "content" : {
+                        "application/json" : {
+                            "schema" : {
+                                "type" : "object",
+                                "properties" : {
+                                    "joke" : {
+                                        "type" : "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses" : {
+                    "201" : {
+                        "description" : "Insère en base de données les informations du requestBody",
+                        "content": {
+                            "application/json" : {
+                                "schema" : {
+                                    "example" : {
+                                        "joke" : "Quel métier les chiens peuvent-ils exercer ? Electrichien !"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404" : {
+                        "description": "Renvoie une erreur, l'ajout de la nouvelle blague en base de données a échoué"
+                    }
+                }
+            }
+        }
+    },
+    "components" : {
+        "schemas" : {
+            "blagues" : {
+                "type" : "object",
+                "properties" : {
+                    "id" : {
+                        "type" : "integer"
+                    },
+                    "joke" : {
+                        "type" : "string"
+                    }
+                },
+                "example" : [
+                    {
+                        "id" : 9,
+                        "joke": "Quel est le sport le plus silencieux ? Le para-chuuuut"
+                    }
+                ]
+            },
+            "arraysOfBlagues" : {
+                "type" : "array",
+                "items" : {
+                    "$ref" : "#/components/schemas/blagues"
+                },
+                "example" : [
+                    {
+                        "id" : 1,
+                        "joke" : "Quelle est la femelle du hamster ? L’Amsterdam"
+                    },
+                    {
+                        "id" : 2,
+                        "joke" : "Que dit un oignon quand il se cogne ? Aïe"
+                    }
+                ]
+            }
+        }
+    }
+}
